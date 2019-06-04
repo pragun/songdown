@@ -1,0 +1,46 @@
+body{
+    background-color: white;
+    padding:50px;
+}
+
+.block{
+    display: inline-block;
+}
+
+.chord{
+    white-space: pre;
+    font-family:"Quattrosans MS",monospace;
+}
+
+.words{
+    white-space: pre;
+    font-family:"Courier",serif;
+
+}
+
+.lyricline{
+    padding:5px;
+    min-height:10px;
+}
+
+.section{
+    font-family:"Helvetica",sans-serif;
+    color:#777;
+}
+
+.artist{
+    font-family:"Helvetica",sans-serif;
+    font-style:italic;
+    font-size:1.1em;
+}
+
+.title{
+    font-family:"Helvetica",sans-serif;
+    font-weight:700;
+    font-size:1.2em;
+}
+
+.comment{
+    font-family:"Quattrosans MS",monospace;
+    font-size:0.8em;
+}

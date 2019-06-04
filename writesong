@@ -1,0 +1,127 @@
+#!/usr/bin/perl
+my $inputfile = $ARGV[0];
+my $htmlfile = "$inputfile.html";
+my $pdffile = "$inputfile.pdf";
+
+print $inputfile,"\n";
+print "Outputting to $htmlfile\n";
+
+open(IFILE, '<', $inputfile) or die $!;
+open(my $ofile, '>', $htmlfile) or die $!;
+
+print $ofile join("\n", '<!doctype html>',
+'<html lang="en">',
+'<head>',
+'<meta charset="utf-8">',
+'<title>',"$inputfile",'</title>',       
+'<meta name="description" content="">',
+'<meta name="author" content="SongDown SongWriting Markdown">',
+'<link rel="stylesheet" href="style.css">',
+'</head>',
+"<body>\n");
+    
+
+sub get_next_top_bottom{
+    my $input = @_[0];
+    
+    #    ~/^({.*?})?(.*?[{\n])/p;
+    $input =~/^        #Look for a match starting at the beigninning of the string
+    ({.*?})    #match the shortest substring bracketed with curly brackets
+    ?          #no worries if there is no bracketed substring, this is often true for the first line of songs
+    (.*?[{\n]) #look for the words for the chords matched above by going upto the next occurrence of the curly bracket
+    /xp;       #The x lets this regex to be split over multiple lines, p allows using postmatch variable
+    
+    my $last_char_bottom = substr $2, -1;
+    my $leftover = "${last_char_bottom}${^POSTMATCH}";
+    my $top = substr $1, 1, -1;
+    my $bottom = substr $2, 0, -1;
+    return ($top,$bottom,$leftover);
+}
+
+sub handle_heading{
+    $_ = @_[0];
+    ~/^(#+)(.*)/p;
+
+    my $hnum = length $1;
+    
+    #print "Handling heading $_\n";
+    #print "Leading Hashes:$1, Text:$2\n";
+    print $ofile '<div class="line">',"<h$hnum>",$2,"</h></div>\n";
+}
+
+sub handle_generic{
+    my ($name, $input) = @_;
+    #print "Handling generic:$name, with text:$input\n";
+    print $ofile '<div class="line"><span class="',$1,'"',">$2",'</span>';
+    if ($name eq "section"){
+	print $ofile "<hr>";
+    }
+    print $ofile "</div>\n";
+}
+
+sub handle_comment{
+    my $input = @_[0];
+    print $ofile '<div class="line"><span class="comment">',$input;
+    print $ofile "</span></div>\n";
+}
+
+
+while(<IFILE>){
+    my @top_text_fragments = ();
+    my @bottom_text_fragments = ();
+    my $top, $bottom, $leftover;
+    
+    if(/^#.*/){
+	handle_heading $_;
+    }
+    elsif(/^(title|artist|section):(.*)/){
+	handle_generic($1,$2);
+    }
+    elsif(/^(%)(.*)/){
+	handle_comment $2;
+    }
+    else{	
+	$leftover = $_;
+	print $ofile '<div class="lyricline">',"\n";	
+
+	until($leftover =~ /^[\n\r\s]*$/)
+	{
+	    #print "Processing: $leftover";
+	    
+	    ($top,$bottom,$leftover) = get_next_top_bottom $leftover;
+	    push(@top_text_fragments,$top);
+	    push(@bottom_text_fragments,$bottom);
+	    
+	    #print "Top:$top, Bottom:$bottom, Leftover:$leftover\n";
+	    #print "Came to an end" if $leftover =~ /^[\n\r\s]*$/;
+	    
+	    print $ofile "\t",'<div class="block">',"\n";
+	    print $ofile "\t\t",'<div class="chord">',$top,"</div>\n";   
+	    print $ofile "\t\t",'<div class="words">',$bottom,"</div>\n";
+	    print $ofile "\t",'</div>',"\n";
+	}
+	
+	print $ofile "</div>\n";
+    }
+	
+    # print "Top Fragments\n";
+    # foreach my $n (@top_text_fragments) {
+    # 	print $n,"\n";
+    # }
+
+    # print "Bottom Fragments\n";
+    # foreach my $n (@bottom_text_fragments) {
+    # 	print $n,"\n";
+    # }
+
+    print "\n";
+
+}
+
+print $ofile "</body>\n</html>";
+
+close IFILE;
+close $ofile;
+
+`wkhtmltopdf "$htmlfile" "$pdffile"`
+    
