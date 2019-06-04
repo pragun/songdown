@@ -39,14 +39,11 @@ sub get_next_top_bottom{
 }
 
 sub handle_heading{
-    $_ = @_[0];
-    ~/^(#+)(.*)/p;
-
-    my $hnum = length $1;
+    my ($hnum,$text) = @_;
     
-    #print "Handling heading $_\n";
-    #print "Leading Hashes:$1, Text:$2\n";
-    print $ofile '<div class="line">',"<h$hnum>",$2,"</h></div>\n";
+    print "Handling heading $_\n";
+    print "Leading Hashes:$hnum, Text:$text\n";
+    print $ofile '<div class="line">',"<h$hnum>",$text,"</h></div>\n";
 }
 
 sub handle_generic{
@@ -71,8 +68,8 @@ while(<IFILE>){
     my @bottom_text_fragments = ();
     my $top, $bottom, $leftover;
     
-    if(/^#.*/){
-	handle_heading $_;
+    if(/^(#+) (.*)/){
+	handle_heading((length $1),$2);
     }
     elsif(/^(title|artist|section):(.*)/){
 	handle_generic($1,$2);
