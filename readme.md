@@ -9,8 +9,9 @@ Usage: `./writedown Example.song`
 
 
 ## Examples
+Check out Example.song for an example.
 
-* # Chord notations
+* #### Chord notations
 ```
 I see {F}trees are {Am}green, {Bb}Red roses {Am}too,
 ```
@@ -21,20 +22,20 @@ I see trees are green, Red roses too,
 ```
 
 
-* # MarkDown style headers
+* #### MarkDown style headers
 ```
 # This is an <h1> tag
 ## This is an <h2> tag
 ###### This is an <h6> tag
 ```
-* # Special mentions
+* #### Special mentions
 Special mentions are supported for song title and artist.
 ```
 title:What A Wonderful World
 artist:Bob Thiele & George Weiss
 ```
 
-* # Section dividers
+* #### Section dividers
 A horizontal break-line and special formatting keeps stuff like Verse 1, Chorus, etc
 visible yet aims not to take too much attention.
 ```
