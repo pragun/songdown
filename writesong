@@ -1,7 +1,38 @@
 #!/usr/bin/perl
-my $inputfile = $ARGV[0];
-my $htmlfile = "$inputfile.html";
-my $pdffile = "$inputfile.pdf";
+use Cwd 'abs_path','getcwd';
+use File::Basename;
+
+my $inputfile = basename($ARGV[0]);
+my ($a, $b, $c) = fileparse($inputfile,qr/\.[^.]*/);
+my $htmlfile = "$a.html";
+my $pdffile = "$a.pdf";
+my $cwd = getcwd();
+my $stylesheet;
+my $script_path = dirname(abs_path(__FILE__));
+
+#The following lines will look for a stylesheet for the intermediate html file
+#The following paths are considered in this order
+#1. <CWD>/style.css [For custom style application for all songs in a folder]
+#2. <CWD>/../defaults/style.css [For custom style application
+#   for all the songs in their own specific folder within a
+#   song-diary kind of a folder
+#3. If none of these above stylesheets are found, it uses the stylesheet
+#   from the script folder
+
+print $script_path;
+#Check if there is a style sheet in the folder where this script is run
+if(-e ($stylesheet = "$cwd/style.css")){
+    print "Found stylesheet here:$stylesheet\n";
+}elsif(-e ($stylesheet = "$cwd/../defaults/style.css")){
+    $stylesheet = abs_path($stylesheet);
+    print "Found stylesheet here:$stylesheet\n";
+}elsif(-e ($stylesheet = "$script_path/style.css")){
+    print "Found stylesheet here:$stylesheet\n";
+}else{
+    print "Could not find stylesheet.";
+    exit -1;
+}
+
 
 print $inputfile,"\n";
 print "Outputting to $htmlfile\n";
@@ -15,11 +46,11 @@ print $ofile join("\n", '<!doctype html>',
 '<meta charset="utf-8">',
 '<title>',"$inputfile",'</title>',       
 '<meta name="description" content="">',
-'<meta name="author" content="SongDown SongWriting Markdown">',
-'<link rel="stylesheet" href="style.css">',
+'<meta name="author" content="SongDown SongWriting Markdown">',		  
+'<link rel="stylesheet" href="'.$stylesheet.'">',
 '</head>',
 "<body>\n");
-    
+
 
 sub get_next_top_bottom{
     my $input = @_[0];
@@ -97,7 +128,8 @@ while(<IFILE>){
 	    print $ofile "\t\t",'<div class="words">',$bottom,"</div>\n";
 	    print $ofile "\t",'</div>',"\n";
 	}
-	
+
+	print $ofile "\t",'<div class="endblock">',"\n\t",'</div>';
 	print $ofile "</div>\n";
     }
 	
