@@ -2,10 +2,11 @@
 use Cwd 'abs_path','getcwd';
 use File::Basename;
 
-my $inputfile = basename($ARGV[0]);
+my $inputfile = $ARGV[0];
 my ($a, $b, $c) = fileparse($inputfile,qr/\.[^.]*/);
-my $htmlfile = "$a.html";
-my $pdffile = "$a.pdf";
+
+my $htmlfile = "$b$a.html";
+my $pdffile = "$b$a.pdf";
 my $cwd = getcwd();
 my $stylesheet;
 my $script_path = dirname(abs_path(__FILE__));
