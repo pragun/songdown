@@ -94,6 +94,10 @@ sub handle_comment{
     print $ofile "</span></div>\n";
 }
 
+sub handle_pagebreak{
+    print $ofile '<div class="pagebreak"></div>';
+}	
+
 
 while(<IFILE>){
     my @top_text_fragments = ();
@@ -109,6 +113,9 @@ while(<IFILE>){
     elsif(/^(%)(.*)/){
 	handle_comment $2;
     }
+	elsif(/^pagebreak(.*)/){
+	handle_pagebreak;
+	}
     else{	
 	$leftover = $_;
 	print $ofile '<div class="lyricline">',"\n";	

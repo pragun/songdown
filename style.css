@@ -13,13 +13,20 @@ body{
 
 .chord{
     white-space: pre;
-    font-family:"Quattrosans MS",monospace;
+    font-family:"Courier",monospace;
+	font-size:1.1em;
+	font-weight:600;
+}
+
+.pagebreak{
+	page-break-before: always;
 }
 
 .words{
     white-space: pre;
-    font-family:"Courier",serif;
-
+    font-family: "Quattrocento Sans" ,sans-serif;
+	font-size:1.1em;
+	font-weight:500;
 }
 
 .lyricline{
@@ -28,23 +35,24 @@ body{
 }
 
 .section{
-    font-family:"Helvetica",sans-serif;
-    color:#777;
+    font-family:"Helvetica", sans-serif;
+    /* color:#777;*/
 }
 
 .artist{
-    font-family:"Helvetica",sans-serif;
+    font-family:"Helvetica", sans-serif;
     font-style:italic;
-    font-size:1.1em;
+    font-size:1.2em;
 }
 
 .title{
-    font-family:"Helvetica",sans-serif;
+    font-family:"Helvetica", sans-serif;
     font-weight:700;
-    font-size:1.2em;
+    font-size:1.3em;
 }
 
 .comment{
     font-family:"Quattrosans MS",monospace;
-    font-size:0.8em;
+    font-size:1.0em;
 }
+
