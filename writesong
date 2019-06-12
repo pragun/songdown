@@ -3,13 +3,17 @@ use Cwd 'abs_path','getcwd';
 use File::Basename;
 
 my $inputfile = $ARGV[0];
-my ($a, $b, $c) = fileparse($inputfile,qr/\.[^.]*/);
+my ($a, $input_dir_path, $c) = fileparse($inputfile,qr/\.[^.]*/);
 
-my $htmlfile = "$b$a.html";
-my $pdffile = "$b$a.pdf";
+my $htmlfile = "$input_dir_path$a.html";
+my $pdffile = "$input_dir_path$a.pdf";
+
 my $cwd = getcwd();
 my $stylesheet;
 my $script_path = dirname(abs_path(__FILE__));
+
+use lib (dirname abs_path $0) . '/';
+require ChordImageGenerator;
 
 #The following lines will look for a stylesheet for the intermediate html file
 #The following paths are considered in this order
@@ -56,12 +60,12 @@ print $ofile join("\n", '<!doctype html>',
 sub get_next_top_bottom{
     my $input = @_[0];
     
-    #    ~/^({.*?})?(.*?[{\n])/p;
-    $input =~/^        #Look for a match starting at the beigninning of the string
-    ({.*?})    #match the shortest substring bracketed with curly brackets
-    ?          #no worries if there is no bracketed substring, this is often true for the first line of songs
-    (.*?[{\n]) #look for the words for the chords matched above by going upto the next occurrence of the curly bracket
-    /xp;       #The x lets this regex to be split over multiple lines, p allows using postmatch variable
+    #    ~/^(\{.*?})?(.*?[{\n])/p;
+    $input =~/^         #Look for a match starting at the beigninning of the string
+    (\{.*?})    		#match the shortest substring bracketed with escaped curly brackets
+    ?          			#no worries if there is no bracketed substring, this is often true for the first line of songs
+    (.*?[{\n]) 			#look for the words for the chords matched above by going upto the next occurrence of the curly bracket
+    /xp;       			#The x lets this regex to be split over multiple lines, p allows using postmatch variable
     
     my $last_char_bottom = substr $2, -1;
     my $leftover = "${last_char_bottom}${^POSTMATCH}";

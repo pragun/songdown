@@ -1,7 +1,13 @@
 body{
     background-color: white;
-    padding:50px;
+	width:210mm;
+	height:297mm;
+	margin-top:15mm;
+	margin-left:15mm;
+	margin-bottom:15mm;
+	margin-right:15mm;
 }
+
 
 .endblock{
     
