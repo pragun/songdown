@@ -1,4 +1,3 @@
-
 package ChordImageGenerator;
 
 use strict;
@@ -19,7 +18,7 @@ sub draw_cross{
 #Inputs to generate chord diagram
 
 our $min_num_frets_to_display = 3;
-our $tuning = "EADGBE";
+our $tuning_input_string = "EADGBE";
 
 #By default it goes from thickest to thinnest
 
@@ -38,7 +37,17 @@ sub generate_chord_image{
 	my $fingering = @_[0];
 	my $out_filename = @_[1];
 	
-	print "Tuning:$tuning\n";
+	print "Tuning Input String:$tuning_input_string\n";
+	
+	$tuning_input_string =~ /^(.+?)(?::(mirror.*))?$/;
+	my $tuning = $1;
+	my $mirrored = $2;
+	
+	if ($mirrored){
+	    $tuning = reverse($tuning);
+	    $fingering = reverse($fingering);
+	}
+	
 	my @tuning = split("",$tuning);
 	my $num_strings = @tuning;
 	
@@ -50,7 +59,6 @@ sub generate_chord_image{
 	$img->fgcolor('black');
 	my $black = $img->colorAllocate(0,0,0);
 	my $white = $img->colorAllocate(255,255,255);
-
 
 	my @fingering = split("",$fingering);
 	if (@fingering != $num_strings){
@@ -80,7 +88,14 @@ sub generate_chord_image{
 	for my $i (0..($num_strings-1)){
 		my $x = ($i*$string_distance)+$string_left_offset;
 		push @string_x_positions,$x;
-		my $pensize = $num_strings - $i + 1;
+		my $pensize;
+		if ($mirrored){
+		    $pensize = $i + 2;
+		}else{
+		    $pensize = $num_strings - $i + 1;
+
+		}
+		
 		$img->penSize($pensize,$pensize);
 		$img->line($x,$fret_top_offset,$x,$height-$fret_bottom_offset);
 		$img->moveTo($x+$string_note_offsets[0],$fret_top_offset+$string_note_offsets[1]);
@@ -101,12 +116,12 @@ sub generate_chord_image{
 	}
 
 	for my $i (0..(@fingering-1)){
-		print "${fingering[$i]}\n";
+		#print "${fingering[$i]}\n";
 		if ($fingering[$i] =~ /[xX]/){
-		print "Muted String\n";
+		#print "Muted String\n";
 		draw_cross($img,$string_x_positions[$i],$fret_top_offset,$finger_dot_size);
 		}elsif($fingering[$i] =~ /[ooO]/){
-		print "Open String\n";
+		#print "Open String\n";
 		$img->bgcolor($white);
 		$img->penSize(8,8);
 		$img->filledArc($string_x_positions[$i],$fret_top_offset,

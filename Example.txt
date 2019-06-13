@@ -11,6 +11,8 @@ I see {F}trees are {Am}green, {Bb}Red roses {Am}too,
 
 {Db}And I think to myself, {Gm7}What a {C7}wonderful {F/F+/Bbmaj7/C7}world
 
+tuning EADGBE
+chordsection Gm7:22x34x Gm71:32x34x Gm7:23x43x Gm76:453455
 
 section:Verse 2:
 I see {F}skies of {Am}blue and {Bb}clouds {Am}of white,

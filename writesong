@@ -1,9 +1,12 @@
 #!/usr/bin/perl
 use Cwd 'abs_path','getcwd';
 use File::Basename;
+use Data::Dump qw(dump);
 
 my $inputfile = $ARGV[0];
 my ($a, $input_dir_path, $c) = fileparse($inputfile,qr/\.[^.]*/);
+$input_dir_path = abs_path($input_dir_path)."/";
+print "input dir path:$input_dir_path\n";
 
 my $htmlfile = "$input_dir_path$a.html";
 my $pdffile = "$input_dir_path$a.pdf";
@@ -26,6 +29,7 @@ require ChordImageGenerator;
 
 print $script_path;
 #Check if there is a style sheet in the folder where this script is run
+
 if(-e ($stylesheet = "$cwd/style.css")){
     print "Found stylesheet here:$stylesheet\n";
 }elsif(-e ($stylesheet = "$cwd/../defaults/style.css")){
@@ -87,7 +91,7 @@ sub handle_generic{
     #print "Handling generic:$name, with text:$input\n";
     print $ofile '<div class="line"><span class="',$1,'"',">$2",'</span>';
     if ($name eq "section"){
-	print $ofile "<hr>";
+		print $ofile "<hr>";
     }
     print $ofile "</div>\n";
 }
@@ -102,6 +106,36 @@ sub handle_pagebreak{
     print $ofile '<div class="pagebreak"></div>';
 }	
 
+sub handle_chord_section{
+    my $chord_section = @_[0];
+    my @chords = split /\s+/,$chord_section;
+    my @chords = grep /\S*/, @chords;
+
+    print $ofile '<div class="chord-section">'."\n";
+    
+    for $i (0..@chords-1){
+	print "For chord:$chords[$i]\n";
+	if ($chords[$i] =~ /^(.*?)(?:$|(?::(.*)))/){
+	    $chord_name = $1;
+	    $chord_fingering = $2;
+	    print "Chord Name:$chord_name, Fingering:$2\n";
+	    my $img_name = $chord_name.'.png';
+	    ChordImageGenerator::generate_chord_image( $chord_fingering,$input_dir_path.$img_name );
+	    print $ofile "\t".'<div class="chord-image">'."\n";
+	    print $ofile "\t\t".'<img src="'.$img_name.'"></img>'."\n";
+	    print $ofile "\t\t".'<div class="chord-name">'.$chord_name."</div>\n";
+	    print $ofile "\t</div>"
+	}
+    }
+
+    print $ofile "\n</div>\n";
+}
+
+sub handle_tuning{
+	print "Tuning:@_[0]\n";
+	$ChordImageGenerator::tuning_input_string = @_[0];
+}
+	
 
 while(<IFILE>){
     my @top_text_fragments = ();
@@ -117,12 +151,18 @@ while(<IFILE>){
     elsif(/^(%)(.*)/){
 	handle_comment $2;
     }
-	elsif(/^pagebreak(.*)/){
+    elsif(/^pagebreak(.*)/){
 	handle_pagebreak;
-	}
+    }
+    elsif(/^chordsection(?:\s+)([\S\s]*)/){
+	handle_chord_section $1;
+    }
+    elsif(/^tuning\s+(.*)/){
+	handle_tuning $1;
+    }
     else{	
 	$leftover = $_;
-	print $ofile '<div class="lyricline">',"\n";	
+	print $ofile '<div class="lyricline">',"\n";
 
 	until($leftover =~ /^[\n\r\s]*$/)
 	{
@@ -141,7 +181,7 @@ while(<IFILE>){
 	    print $ofile "\t",'</div>',"\n";
 	}
 
-	print $ofile "\t",'<div class="endblock">',"\n\t",'</div>';
+	print $ofile "\t",'<div class="endblock">',"\n\t</div>\n";
 	print $ofile "</div>\n";
     }
 	

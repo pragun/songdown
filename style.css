@@ -1,16 +1,42 @@
 body{
     background-color: white;
-	width:210mm;
-	height:297mm;
-	margin-top:15mm;
-	margin-left:15mm;
-	margin-bottom:15mm;
-	margin-right:15mm;
+    width:210mm;
+    height:297mm;
+    margin-top:15mm;
+    margin-left:15mm;
+    margin-bottom:15mm;
+    margin-right:15mm;
 }
-
 
 .endblock{
     
+}
+
+.chord-section{
+    width:100%;
+    display:block;
+    border-top-style:solid;
+    border-top-width:0.25mm;
+    border-bottom-style:solid;
+    border-bottom-width:0.25mm;
+    padding-top:3mm;
+    padding-bottom:3mm;
+}
+
+.chord-image{
+    width:24%;
+    display:inline-block;
+}
+
+.chord-image img{
+    width:100%;
+}
+
+.chord-name{
+    width:100%;
+    text-align:center;
+    font-family:"Courier",monospace;
+    font-size:1.1em;
 }
 
 .block{
@@ -20,19 +46,19 @@ body{
 .chord{
     white-space: pre;
     font-family:"Courier",monospace;
-	font-size:1.1em;
-	font-weight:600;
+    font-size:1.1em;
+    font-weight:600;
 }
 
 .pagebreak{
-	page-break-before: always;
+    page-break-before: always;
 }
 
 .words{
     white-space: pre;
     font-family: "Quattrocento Sans" ,sans-serif;
-	font-size:1.1em;
-	font-weight:500;
+    font-size:1.1em;
+    font-weight:500;
 }
 
 .lyricline{
