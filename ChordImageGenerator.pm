@@ -32,14 +32,15 @@ sub draw_cross{
 
 #Inputs to generate chord diagram
 
-our $min_num_frets_to_display = 3;
+our $min_num_frets_to_display = 4;
+our $max_num_frets_to_display = 5;
 our $tuning_input_string = "EADGBE";
 
 #By default it goes from thickest to thinnest
 
 #More specific rendering configuration values
 my @string_note_offsets = (-10,-40);
-my @fret_number_offsets = (-60,20);
+my @fret_number_offsets = (-60,60);
 my $string_left_offset = 100;
 my $string_right_offset = 50;
 my $fret_top_offset = 100;
@@ -83,10 +84,19 @@ sub generate_chord_image{
 	}
 
 	my @fret_positions_only_numbers = grep {!/[oOxX]/} @fingering;
+
+	#old fret display logic
+	#my $min_chord_fret = min @fret_positions_only_numbers;
+	#my $max_chord_fret = max @fret_positions_only_numbers;
+	#my $min_display_fret = max (($min_chord_fret),0);
+	#my $max_display_fret = max($max_chord_fret, ($min_display_fret + $min_num_frets_to_display));
+
+	#new fret display logic
 	my $min_chord_fret = min @fret_positions_only_numbers;
 	my $max_chord_fret = max @fret_positions_only_numbers;
-	my $min_display_fret = max (($min_chord_fret),0);
-	my $max_display_fret = max($max_chord_fret, ($min_display_fret + $min_num_frets_to_display));
+	my $max_display_fret = max ($max_chord_fret + 1, $min_num_frets_to_display);
+	my $min_display_fret = max (($max_display_fret - $max_num_frets_to_display),1);
+	
 	my @frets = ($min_display_fret..$max_display_fret);
 	my $num_display_frets = @frets;
 	print "Display frets:@frets. Num frets:$num_display_frets\n";
@@ -105,9 +115,9 @@ sub generate_chord_image{
 		push @string_x_positions,$x;
 		my $pensize;
 		if ($mirrored){
-		    $pensize = $i + 2;
+		    $pensize = 2*$i + 2;
 		}else{
-		    $pensize = $num_strings - $i + 1;
+		    $pensize = 2*($num_strings - $i + 1);
 
 		}
 		
@@ -119,14 +129,16 @@ sub generate_chord_image{
 
 	for my $i (0..($num_display_frets-1)){
 		if($i == 0){
-			$img->penSize(4,4);
+			$img->penSize(8,8);
 			}else{
-			$img->penSize(1,1);
+			$img->penSize(2,2);
 		}
 		my $y = ($i*$fret_distance)+$fret_top_offset;
 		$img->line($string_left_offset,$y,$width-$string_right_offset,$y);
 		$img->moveTo($string_left_offset+$fret_number_offsets[0],$y+$fret_number_offsets[1]);
-		$img->string($frets[$i]);
+		if($i != ($num_display_frets -1)){
+		    $img->string($frets[$i]);
+		}
 		$fret_y_positions{$frets[$i]} = $y + ($fret_distance/2);
 	}
 

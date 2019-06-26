@@ -105,7 +105,7 @@ sub handle_heading{
 sub handle_generic{
     my ($name, $input) = @_;
     #print "Handling generic:$name, with text:$input\n";
-    print $ofile '<div class="line"><span class="',$1,'"',">$2",'</span>';
+    print $ofile '<div class="line"><div class="',$1,'"',">$2",'</div>';
     if ($name eq "section"){
 		print $ofile "<hr>";
     }
@@ -120,7 +120,7 @@ sub handle_comment{
 
 sub handle_pagebreak{
     print $ofile '<div class="pagebreak"></div>';
-}	
+}
 
 sub handle_chord_section{
     my $chord_section = @_[0];

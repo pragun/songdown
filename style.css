@@ -31,7 +31,7 @@ body{
 }
 
 .chord-image{
-    width:24%;
+    width:19%;
     display:inline-block;
 }
 
@@ -75,6 +75,8 @@ body{
 
 .section{
     font-family:"Helvetica", sans-serif;
+    text-align:right;
+    width:100;
     /* color:#777;*/
 }
 

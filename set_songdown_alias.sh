@@ -8,5 +8,5 @@ echo " writesong <input-file> "
 echo "to generate PDF files"
 
 SD_PATH=$PWD
-alias writesong='perl "${SD_PATH}/writesong"'
+alias writesong='perl "${SD_PATH}/writesong.pl"'
 cd ..
