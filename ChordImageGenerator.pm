@@ -32,8 +32,8 @@ sub draw_cross{
 
 #Inputs to generate chord diagram
 
-our $min_num_frets_to_display = 4;
-our $max_num_frets_to_display = 5;
+our $min_num_frets_to_display = 3;
+our $max_num_frets_to_display = 4;
 our $tuning_input_string = "EADGBE";
 
 #By default it goes from thickest to thinnest
